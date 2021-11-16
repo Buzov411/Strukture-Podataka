@@ -1,119 +1,109 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include<stdio.h>
+#include<stdlib.h>
+#include<malloc.h>
+#include<string.h>
 
-struct Element;
-typedef struct Element* position;
-typedef struct Element
-{
-    double number;
-    position next;
-}element;
+typedef struct stack* pozicija;
+struct stack {
+	int element;
+	pozicija next;
+};
 
-position create_element(double number);
-int insert_after(position p, position new_el);
-int push(position head, double number);
-int delete_after(position p);
-int pop(position head, double* result);
-int perform_operation(position head, char operation);
-int calculate_postfix_from_file(char* file_name, double* result);
+int push(pozicija, int);
+int pop(pozicija);
 
 int main()
 {
-    return 0;
+	struct stack head;
+	char* buffer = NULL;
+	int x = 0, y = 0, rezultat = 0;
+	int n = 0, broj = 0, brojac = 0;
+	int duljina = 0;
+	int velicina = 0;
+
+	char fileName[50];
+	char znak;
+
+	printf("Ime datoteke: ");
+	scanf(" %s", fileName);
+
+	FILE* dat = fopen(fileName, "r");
+	if (!dat)
+	{
+		printf("Ne moze otvoriti datoteku!\n");
+		return 1;
+	}
+
+	buffer = (char*)malloc(1024);
+	fgets(buffer, 1024, dat);
+
+	velicina = strlen(buffer);
+
+	while (brojac <= duljina)
+	{
+		if (sscanf(buffer, "%d %n", &broj, &n) == 1)
+			push(&head, broj);
+
+		else if (sscanf(buffer, "%c %n", &znak, &n) == 1)
+		{
+			if (znak == 1)
+			{
+				y = pop(&head);
+				x = pop(&head);
+				rezultat = x + y;
+				push(&head, rezultat);
+			}
+
+			else if (znak == '-')
+			{
+				y = pop(&head);
+				x = pop(&head);
+				rezultat = x - y;
+				push(&head, rezultat);
+			}
+			else if (znak == '*')
+			{
+				y = pop(&head);
+				x = pop(&head);
+				rezultat = x * y;
+				push(&head, rezultat);
+			}
+		}
+
+		brojac += n;
+		buffer += n;
+	}
+	
+	printf("Rezultat: %d\n", pop(&head));
+
+	return 0;
+
 }
 
-position create_element(double number)
+int pop(pozicija p)
 {
-    //fali
+	pozicija q = NULL;
+	q = (pozicija)malloc(sizeof(struct stack));
+
+	if (p->next != NULL)
+	{
+		q = p->next;
+		p->next = q->next;
+		return q->element;
+		free(q);
+	}
+
+	return 0;
 }
 
-int insert_after(position p, position new_el)
+int push(pozicija p, int z)
 {
-    new_el->next = position->next;
-    position->next = new_el;
-    return 0;
-}
+	pozicija q = NULL;
+	q = (pozicija)malloc(sizeof(struct stack));
 
-int push(position head, double number)
-{
-    position new_el = NULL;
-    new_el = create_element(number);
+	q->element = z;
+	q->next = p->next;
+	p->next = q;
 
-}
-
-int delete_after(position p)
-{
-    position temp = position->next;
-    if (!temp)
-    {
-        return 0;
-    }
-    position->next = temp->next;
-    free(temp);
-    return 0;
-}
-
-int pop(position head, double* result)
-{
-    position first = head->next;
-    if (!first)
-    {
-        printf("Postfix not found.\n");
-    }
-    *result = first->number;
-    delete_after(head);
-    return 0;
-}
-
-int perform_operation(position head, char operation)
-{
-    double operand1 = 0;
-    double operand2 = 0;
-    int status1 = 0;
-    int status2 = 0;
-    double result = 0;
-    status2 = pop(&operand2, head);
-    if (!status2)
-    {
-        return -1;
-    }
-    status1 = pop(&operand1, head);
-    if (!status1)
-    {
-        return -2;
-    }
-    switch (operation)
-    {
-    case '+':
-        result = operand1 + operand2;
-        break;
-    case '*':
-        result = operand1 * operand2;
-        break;
-    case '-':
-        result = operand1 - operand2;
-        break;
-    case '/':
-        if (operand2 = 0)
-        {
-            printf("You can't devide by zero.\n");
-            return -3;
-        }
-        result = operand1 / operand2;
-        break;
-    }
-    //fali nesto
-    return push(head, result);
-}
-
-int calculate_postfix_from_file(char* file_name, double* result)
-{
-    FILE* file = NULL;
-    file = fopen(file_name, "rb");
-    if (!file)
-    {
-        printf("Can't open file.\n");
-        return -1;
-    }
+	return 0;
 }
