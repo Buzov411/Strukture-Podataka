@@ -25,11 +25,9 @@ int main_loop(int a, int b, position root);
 
 int main()
 {
-	position root = (position)malloc(sizeof(node));
+	position root = NULL;
 	int a = 4;
 	int b = 0;
-	root->left = NULL;
-	root->right = NULL;
 	main_loop(a, b, root);
 	return 0;
 }
@@ -92,15 +90,14 @@ int print_postorder(position current)
 
 int main_loop(int a, int b, position root)
 {
-	position c;
+	position current;
 	printf("Za unos novog elementa u binarno stablo upisite 0, a za ispis elemenata unesite brojeve od 1 do 3:\ninorder - 1\npreorder - 2\npostorder - 3\n");
 	scanf_s("%d", &a);
 	if (a == 0)
 	{
 		printf("Unesite broj u binarno stablo.\n");
 		scanf_s("%d", &b);
-		c = make_node(b);
-		insert(root, c);
+		current = insert(root, make_node(b));
 		main_loop(a, b, root);
 	}
 	else if (a == 1)
