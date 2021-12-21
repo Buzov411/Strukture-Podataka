@@ -1,3 +1,8 @@
+//Napisati program koji pomocu vezanih listi(stabala) predstavlja strukturu direktorija.
+//Omoguciti unos novih direktorija i pod - direktorija, ispis sadržaja direktorija i
+//povratak u prethodni direktorij. Tocnije program treba preko menija simulirati
+//koristenje DOS naredbi : 1 - "md", 2 - "cd dir", 3 - "cd..", 4 - "dir" i 5 – izlaz.
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -22,30 +27,24 @@ typedef struct _element_stoga
 	position next;
 }element_stoga;
 
-//stog
 int push(element_stoga* head, element_stoga* stvoreni, position ulazni);
 int pop(element_stoga* head);
 element_stoga* stvori_novog_stog();
 int printaj(element_stoga* head);
-element_stoga* trazi_element(element_stoga*head);
-
-//stablo
+element_stoga* trazi_element(element_stoga* head);
 position stvori_novog();
 position insert(position current, position ne);
-
-//ispisi odabira
 int meni();
 
 int main()
 {
 	char naredba[LINE] = { 0 };
 	element majka = { 'C',NULL,NULL };
-	position ne=NULL;
-	position parent=NULL;
+	position ne = NULL;
+	position parent = NULL;
 	element_stoga* roditelj = NULL;
 	element_stoga* temp = NULL;
 	element_stoga head = { NULL,NULL };
-	//majka = (position)malloc(sizeof(element));
 
 	meni();
 
@@ -57,9 +56,7 @@ int main()
 			{
 				*parent = majka;
 			}
-			//temp = insert(parent->child, stvori_novog());
 			parent->child = insert(parent->child, stvori_novog());
-			//push(&head, stvori_novog_stog(),temp);
 		}
 		if (strcmp(naredba, "cd..") == 0)
 		{
@@ -81,35 +78,6 @@ int main()
 		{
 			printaj(&head);
 		}
-		/*
-		switch (*naredba)
-		{
-		case 'meni':
-		{
-			meni();
-			break;
-		}
-		case 'md':
-		{
-			ne = stvori_novog();
-			parent->child = insert(parent->child,ne);
-			break;
-		}
-		case 'cd dir':
-		{
-			break;
-		}
-		case 'cd..':
-		{
-			break;
-		}
-		case 'dir':
-		{
-			break;
-		}
-			default:
-				break;
-		}*/
 	} while (strcmp(naredba, "izlaz") != 0);
 	return 0;
 }
@@ -132,8 +100,8 @@ position stvori_novog()
 	novi = (position)malloc(sizeof(element));
 	char naziv[LINE] = { 0 };
 	printf("\nUnesite ime structure: ");
-	scanf(" %s", naziv);
-	strcpy(novi->ime, naziv);
+	scanf_s(" %s", naziv);
+	strcpy_s(novi->ime, LINE, naziv);
 	novi->child = NULL;
 	novi->sibling = NULL;
 	return novi;
@@ -166,11 +134,11 @@ element_stoga* stvori_novog_stog()
 	return novi;
 }
 
-int push(element_stoga* head, element_stoga* stvoreni,position ulazni)
+int push(element_stoga* head, element_stoga* stvoreni, position ulazni)
 {
 	stvoreni->next = head->next;
 	stvoreni->p = ulazni;
-	head->next = stvoreni;				//zasto ako su jedan i drugi deklarirani kao element_stoga*
+	head->next = stvoreni;				
 
 	return EXIT_SUCCESS;
 }
@@ -203,18 +171,16 @@ int pop(element_stoga* head)
 int printaj(element_stoga* head)
 {
 	element_stoga* temp = NULL;
-	//element_stoga* temp2 = NULL;
 	temp = head->next;
-	//temp2 = head->next;
 
 	if (!temp)
 	{
-		pritnf("\nNema elemenata!!\n");
+		printf("\nNema elemenata!!\n");
 	}
 
-	while (temp!=NULL)
+	while (temp != NULL)
 	{
-		printf("/%s",temp->p->ime);
+		printf("/%s", temp->p->ime);
 		temp = temp->next;
 	}
 
@@ -226,13 +192,13 @@ element_stoga* trazi_element(element_stoga* head)
 	element_stoga* temp = NULL;
 	char ime[LINE] = { 0 };
 	printf("\nU koji direktorij idemo: ");
-	scanf(" %s", ime);
+	scanf_s("%s", &ime);
 	temp = head->next;
-	
+
 	if (!temp)
 		return EXIT_SUCCESS;
 
-	while (temp!=NULL)
+	while (temp != NULL)
 	{
 		if (strcmp(temp->p->ime, ime))
 			return temp;
